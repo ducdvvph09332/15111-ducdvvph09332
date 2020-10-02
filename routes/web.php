@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('students.index');
 });
 
 // Route::get('/students/{id}/{age}', function ($id, $age) {
@@ -41,13 +44,14 @@ Route::get('/', function () {
 //     return view('students.index', ['students'=>$students]);
 // });
 
-Route::get('students-list', function () {
-    $students = DB::table('students')->orderBy('id', 'desc')->get();
-    return view('students.list', [
-        'students' => $students,
-        'error' => null,
-        ]);
-})->name('student-list');
+
+// Route::get('students-list', function () {
+//     $students = DB::table('students')->orderBy('id', 'desc')->get();
+//     return view('students.list', [
+//         'students' => $students,
+//         'error' => null,
+//         ]);
+// })->name('student-list');
 
 Route::get('/login', function(){
     return view('login');
@@ -65,3 +69,11 @@ Route::post('/post-login', function(Request $request){
         return redirect()->route('get-login');
     }
 })->name('post-login');
+
+
+Route::resource('students', StudentController::class);
+    //->only(['index'])
+    //->except(['edit'])
+
+Route::get('/subjects', [SubjectController::class, 'index'])
+    ->name('subject.index');
