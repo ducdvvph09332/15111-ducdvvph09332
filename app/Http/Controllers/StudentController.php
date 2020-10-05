@@ -14,7 +14,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();
+        $students = Student::orderBy('id', 'desc')->get();
 
         return view('students.index', ['students' => $students]);
     }
@@ -26,7 +26,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        dd('student controller');
+        return view('students.create');
     }
 
     /**
@@ -37,7 +37,12 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new Student;
+        $user->fill($request->all());
+        $user->save();
+        if($user->save()){
+            return redirect()->route('students.index');
+        }
     }
 
     /**
@@ -50,8 +55,7 @@ class StudentController extends Controller
     {
         //nếu truyền vào chỉ $student sẽ chỉ lấy đc id
         //nếu truyền vào Student $student sễ lấy được cả student có id là $student
-        return view('students.show',['student'=> $student]);
-
+        return view('students.show', ['student' => $student]);
     }
 
     /**
@@ -62,7 +66,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        //
+        return view('students.edit', ['student' => $student]);
     }
 
     /**
@@ -74,7 +78,9 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+        if ($student->update([$request->all()])) {
+            return redirect()->route('students.index');
+        }
     }
 
     /**
@@ -85,6 +91,14 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        if ($student) {
+            $student->delete();
+            //=>trả về true/false, áp dụng vs trg hợp xóa ít
+        }
+
+        //cách 2: Student::destroy($student->id)
+        //=> trả về số lg, áp dụng vs trg hợp xóa nhiều
+
+        return redirect()->route('students.index');
     }
 }

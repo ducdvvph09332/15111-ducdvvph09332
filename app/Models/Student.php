@@ -17,6 +17,5 @@ class Student extends Model
         'age',
         'gender',
         'address',
-        'is_active',
     ];
 }
